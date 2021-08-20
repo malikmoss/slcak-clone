@@ -14,10 +14,19 @@ export const schema = makeExecutableSchema({
 const app = express();
 const graphqlEndpoint = 'graphql';
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+app.use('/graphql', bodyParser.json(), 
+graphqlExpress({ 
+    schema,
+    context: {
+        models,
+        user: {
+            id: 1,
+        }
+    }
+ }));
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-models.sequelize.sync().then(x => {
+models.sequelize.sync({force: true}).then(x => {
 app.listen(8081);
 });
